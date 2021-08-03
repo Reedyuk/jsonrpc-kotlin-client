@@ -8,7 +8,7 @@ class ClientTests {
 
     @Test
     fun testGet() = runTest {
-        val client = Client()
-        client.get("https://ktor.io/")
+        val client = RPCClient("https://ktor.io/")
+        // need to implement a json rpc request using service.
     }
 }
