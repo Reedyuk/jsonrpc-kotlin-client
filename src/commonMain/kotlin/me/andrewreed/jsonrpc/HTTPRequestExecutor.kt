@@ -6,7 +6,7 @@ interface ResultParser<Result> {
     fun parse(obj: Any): Result
 }
 
-class AnyResultParser<T> : ResultParser<T> {
+open class AnyResultParser<T> : ResultParser<T> {
     override fun parse(obj: Any): T {
         // try to parse, maybe could use kotlin serialisation.
         return obj as T

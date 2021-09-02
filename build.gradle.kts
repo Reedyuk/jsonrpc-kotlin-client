@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform") version "1.5.30-M1"
+    kotlin("plugin.serialization") version "1.5.30"
     id("com.android.library")
 }
 
@@ -38,6 +39,9 @@ kotlin {
             dependencies {
                 implementation("io.ktor:ktor-client-core:$ktor_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version")
+                implementation("io.ktor:ktor-client-serialization:$ktor_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+                //implementation("org.jetbrains.kotlinx:atomicfu-common:0.16.2")
             }
         }
         val commonTest by getting {
