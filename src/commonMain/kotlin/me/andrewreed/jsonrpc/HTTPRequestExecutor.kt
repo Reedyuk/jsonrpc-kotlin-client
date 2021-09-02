@@ -21,10 +21,10 @@ data class Invocation<Result>(
     val parser: AnyResultParser<Result>
 )
 
-class Request<R>(val id: String? = null, invocaction: Invocation<R>) {
+class Request<R>(val id: String? = null, invocation: Invocation<R>) {
 
-    val method = invocaction.method
-    val params = invocaction.params
+    val method = invocation.method
+    val params = invocation.params
 
     // buildBody
     fun buildBody(): Map<String, Any> {
@@ -50,6 +50,12 @@ class Request<R>(val id: String? = null, invocaction: Invocation<R>) {
         data,
         id
     }
+
+    override fun toString(): String = "{ " +
+        "id = " + id + ", " +
+        "method = " + method + ", " +
+        "params = " + params + " " +
+        "}"
 }
 
 interface RequestExecutor {
@@ -67,5 +73,4 @@ class HTTPRequestExecutor(private val config: HTTPRequestExecutorConfig, private
     override suspend fun <Request> execute(request: Request, completionHandler: (RequestExecutorResult) -> Unit) {
         completionHandler(RequestExecutorResult.error)
     }
-
 }

@@ -15,6 +15,7 @@ repositories {
 
 val ktor_version: String by project
 val kotlinx_coroutines_version: String by project
+val kermit_version: String by project
 
 kotlin {
     android {
@@ -41,6 +42,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version")
                 implementation("io.ktor:ktor-client-serialization:$ktor_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+                implementation("co.touchlab:kermit:$kermit_version")
                 //implementation("org.jetbrains.kotlinx:atomicfu-common:0.16.2")
             }
         }
@@ -81,5 +83,8 @@ android {
     defaultConfig {
         minSdkVersion(24)
         targetSdkVersion(29)
+    }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
     }
 }

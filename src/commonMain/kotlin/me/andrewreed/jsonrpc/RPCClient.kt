@@ -1,17 +1,20 @@
 package me.andrewreed.jsonrpc
 
+import co.touchlab.kermit.Kermit
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonObject
 import kotlin.native.concurrent.SharedImmutable
 
 @SharedImmutable
 internal expect val ApplicationDispatcher: CoroutineDispatcher
+
+internal val kermit = Kermit()
 
 class RPCClient(private val url: String) {
 
@@ -21,7 +24,7 @@ class RPCClient(private val url: String) {
         install(JsonFeature)
     }
 
-    //suspend fun <R> invoke(invocation: Invocation<R>): ResultDispatcher<R> {
+    // suspend fun <R> invoke(invocation: Invocation<R>): ResultDispatcher<R> {
     suspend fun <R> invoke(invocation: Invocation<R>): R {
         val request = makeRequest(invocation)
         //
@@ -33,7 +36,7 @@ class RPCClient(private val url: String) {
 //        }
 //
 //        return resultDispatcher.promise
-        //throw NotImplementedError("TODO")
+        // throw NotImplementedError("TODO")
 
         // Init request
 //        let request = makeRequest(invocation: invocation)
@@ -55,30 +58,21 @@ class RPCClient(private val url: String) {
     }
 
     private suspend fun <R> execute(request: Request<R>): Any {
-        //execute request and return result
+        kermit.i("Request -> $request")
 
         val response = ktorClient.post<JsonObject>(url) {
             contentType(ContentType.Application.Json)
-            body = "{\n" +
-                    "\t\"jsonrpc\":\"2.0\",\n" +
-                    "\t\"method\":\"${request.method}\",\n" +
-                    "\t\"params\":[],\n" +
-                    "\t\"id\":73\n" +
-                    "}"
+            body = request.buildBody()
         }
-        println("Response -> $response")
+
+        kermit.i("Response -> $response")
         ktorClient.close()
-
-        // need to convert to R
-
-        return response
+        try {
+            return response.getValue("result")
+        } catch (error: NoSuchElementException) {
+            throw ExecuteException(response.getValue("error").jsonObject)
+        }
     }
-
-//    suspend fun get(url: String) {
-//        val response: HttpResponse = ktorClient.get(url)
-//        println("Response -> $response")
-//        ktorClient.close()
-//    }
 }
 
 typealias RequestId = String
@@ -94,9 +88,9 @@ class RequestIdGenerator {
 }
 
 // dont think its needed.
-//class ResultDispatcher<R>(val invocation: Invocation<R>) {
+// class ResultDispatcher<R>(val invocation: Invocation<R>) {
 //
-//}
+// }
 
 // final class ResultDispatcher<Result>
 // {
@@ -135,11 +129,9 @@ class RequestIdGenerator {
 class JsonPrimitiveResultParser : AnyResultParser<JsonPrimitive>() {
     override fun parse(obj: Any): JsonPrimitive {
         try {
-            // Need to find a way where we can parse this? as it will be trying to convert a json object.
             return obj as JsonPrimitive
         } catch (error: Throwable) {
-            throw error
-            // throw ResultParserError.invalidFormat(obj)
+            throw InvalidFormatResultParserError(error)
         }
     }
 }
@@ -159,3 +151,8 @@ abstract class RPCService(private val client: RPCClient) {
         return Invocation<Result>(method, params, parser)
     }
 }
+
+class ExecuteException(jsonObject: JsonObject) : Throwable(jsonObject.toString())
+
+abstract class ResultParserError(error: Throwable) : Throwable(error)
+class InvalidFormatResultParserError(error: Throwable) : ResultParserError(error)
