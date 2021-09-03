@@ -1,7 +1,7 @@
 package me.andrewreed.jsonrpc.RequestExecutor
 
-import me.andrewreed.jsonrpc.RequestExecutor.HTTP.HTTPRequestExecutorConfig
 import me.andrewreed.jsonrpc.Invocation.Invocation
+import me.andrewreed.jsonrpc.RequestExecutor.HTTP.HTTPRequestExecutorConfig
 
 class Request<R>(val id: String? = null, invocation: Invocation<R>) {
 

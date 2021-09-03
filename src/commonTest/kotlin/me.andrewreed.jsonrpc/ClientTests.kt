@@ -5,7 +5,6 @@ import me.andrewreed.jsonrpc.Client.ExecuteException
 import me.andrewreed.jsonrpc.Client.RPCClient
 import me.andrewreed.jsonrpc.Service.RPCService
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
@@ -18,9 +17,11 @@ private val local = "http://127.0.0.1:7545"
 class ClientTests {
     private val kermit = Kermit()
 
+    private val clientUrl = local
+
     @Test
     fun testPost() = runTest {
-        val client = RPCClient(ropsten)
+        val client = RPCClient(clientUrl)
         val service = object : RPCService(client) {
             suspend fun gasPrice(): String {
                 val gasPrice = invoke("eth_gasPrice")
@@ -30,12 +31,12 @@ class ClientTests {
         }
         val price = service.gasPrice()
 
-        //assertEquals("0x4a817c800", price)
+        // assertEquals("0x4a817c800", price)
     }
 
 //    @Test
 //    fun testPostWithParams() = runTest {
-//        val client = RPCClient(ropsten)
+//        val client = RPCClient(clientUrl)
 //        val service = object : RPCService(client) {
 //            suspend fun sha(): String {
 //                val sha = invoke("web3_sha3", arrayOf("0x68656c6c6f20776f726c64"))
@@ -50,7 +51,7 @@ class ClientTests {
     @Test
     fun testPostInvalid() = runTest {
         try {
-            val client = RPCClient(ropsten)
+            val client = RPCClient(clientUrl)
             val service = object : RPCService(client) {
                 suspend fun gasPrice() {
                     val gasPrice = invoke("fsfdsfdfsdf")

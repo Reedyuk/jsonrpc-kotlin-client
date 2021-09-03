@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform") version "1.5.30-M1"
     kotlin("plugin.serialization") version "1.5.30"
     id("com.android.library")
+    id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
 }
 
 group = "me.andrewreed"
@@ -86,4 +87,8 @@ android {
     testOptions {
         unitTests.isReturnDefaultValues = true
     }
+}
+
+ktlint {
+    version.set("0.41.0")
 }

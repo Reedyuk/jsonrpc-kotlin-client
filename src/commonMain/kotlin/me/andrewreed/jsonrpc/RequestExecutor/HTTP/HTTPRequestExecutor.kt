@@ -4,7 +4,6 @@ import io.ktor.client.*
 import me.andrewreed.jsonrpc.RequestExecutor.RequestExecutor
 import me.andrewreed.jsonrpc.RequestExecutor.RequestExecutorResult
 
-
 class HTTPRequestExecutor(private val config: HTTPRequestExecutorConfig, private val httpClient: HttpClient) :
     RequestExecutor {
 
