@@ -15,5 +15,8 @@ jobs:
       - name: Run gradle build
         run: ./gradlew build
 
+      - name: homebrew & ganache
+        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)" && brew update && brew install --cask ganache
+
       - name: Run Tests
         run: ./gradlew jsTest

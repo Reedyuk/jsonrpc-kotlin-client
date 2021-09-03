@@ -13,7 +13,7 @@ open class AnyResultParser<T> : ResultParser<T> {
     }
 }
 
-typealias Params = Map<String, Any?>
+typealias Params = Array<String>
 
 data class Invocation<Result>(
     val method: String,
@@ -31,8 +31,8 @@ class Request<R>(val id: String? = null, invocation: Invocation<R>) {
         val body: MutableMap<String, Any> = mutableMapOf(
             JsonKeys.jsonrpc.name to HTTPRequestExecutorConfig.version,
             JsonKeys.method.name to method
-            // JsonKeys.params.name to params
         )
+        params?.let { params -> body[JsonKeys.params.name] = params.joinToString(prefix = "[", postfix = "]", separator = ",") }
         id?.let { body[JsonKeys.id.name] = it }
 
         return body
