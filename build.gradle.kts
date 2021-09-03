@@ -1,6 +1,8 @@
 plugins {
     kotlin("multiplatform") version "1.5.30-M1"
+    kotlin("plugin.serialization") version "1.5.30"
     id("com.android.library")
+    id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
 }
 
 group = "me.andrewreed"
@@ -14,6 +16,7 @@ repositories {
 
 val ktor_version: String by project
 val kotlinx_coroutines_version: String by project
+val kermit_version: String by project
 
 kotlin {
     android {
@@ -38,6 +41,9 @@ kotlin {
             dependencies {
                 implementation("io.ktor:ktor-client-core:$ktor_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version")
+                implementation("io.ktor:ktor-client-serialization:$ktor_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+                implementation("co.touchlab:kermit:$kermit_version")
             }
         }
         val commonTest by getting {
@@ -78,4 +84,11 @@ android {
         minSdkVersion(24)
         targetSdkVersion(29)
     }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
+}
+
+ktlint {
+    version.set("0.41.0")
 }
