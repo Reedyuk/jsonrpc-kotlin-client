@@ -43,7 +43,6 @@ kotlin {
                 implementation("io.ktor:ktor-client-serialization:$ktor_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
                 implementation("co.touchlab:kermit:$kermit_version")
-                //implementation("org.jetbrains.kotlinx:atomicfu-common:0.16.2")
             }
         }
         val commonTest by getting {

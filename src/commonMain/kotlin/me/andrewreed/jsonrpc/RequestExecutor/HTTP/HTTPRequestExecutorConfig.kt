@@ -1,4 +1,4 @@
-package me.andrewreed.jsonrpc
+package me.andrewreed.jsonrpc.RequestExecutor.HTTP
 
 import io.ktor.http.*
 
@@ -6,6 +6,6 @@ data class HTTPRequestExecutorConfig(
     val baseURL: Url
 ) {
     companion object {
-        val version = "2.0"
+        const val version = "2.0"
     }
 }
