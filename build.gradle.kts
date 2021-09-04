@@ -8,7 +8,6 @@ plugins {
 
 val project_version: String by project
 
-
 group = "uk.co.andrewreed"
 version = project_version
 
