@@ -1,4 +1,4 @@
-package me.andrewreed.jsonrpc
+package uk.co.andrewreed.jsonrpc
 
 import kotlinx.coroutines.runBlocking
 
