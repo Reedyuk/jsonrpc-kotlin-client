@@ -4,10 +4,10 @@ import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonObject
 import me.andrewreed.jsonrpc.Invocation.Invocation
+import me.andrewreed.jsonrpc.RequestExecutor.Error
 import me.andrewreed.jsonrpc.RequestExecutor.Request
+import me.andrewreed.jsonrpc.RequestExecutor.Response
 import me.andrewreed.jsonrpc.kermit
 
 class RPCClient(private val url: String) {
@@ -25,18 +25,16 @@ class RPCClient(private val url: String) {
     private suspend fun <R> execute(request: Request<R>): Any {
         kermit.i("Request -> $request")
 
-        val response = ktorClient.post<JsonObject>(url) {
+        //  convert to response object
+        val response = ktorClient.post<Response>(url) {
             contentType(ContentType.Application.Json)
             body = request.buildBody()
         }
 
         kermit.i("Response -> $response")
         ktorClient.close()
-        try {
-            return response.getValue("result")
-        } catch (error: NoSuchElementException) {
-            throw ExecuteException(response.getValue("error").jsonObject)
-        }
+        response.error?.let { throw ExecuteException(it) }
+        return response.result!!
     }
 }
 
@@ -51,7 +49,7 @@ class RequestIdGenerator {
     }
 }
 
-class ExecuteException(jsonObject: JsonObject) : Throwable(jsonObject.toString())
+class ExecuteException(val error: Error) : Throwable(error.toString())
 
 abstract class ResultParserError(error: Throwable) : Throwable(error)
 class InvalidFormatResultParserError(error: Throwable) : ResultParserError(error)
