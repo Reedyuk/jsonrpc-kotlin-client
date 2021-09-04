@@ -3,6 +3,7 @@ plugins {
     kotlin("plugin.serialization") version "1.5.30"
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
+    `maven-publish`
 }
 
 val project_version: String by project

@@ -17,7 +17,7 @@ data class Response(
 data class Error(
     val message: String,
     val code: Int,
-    val data: JsonObject
+    val data: JsonObject? = null
 ) {
     override fun toString(): String {
         return "{" +
