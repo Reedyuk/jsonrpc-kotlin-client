@@ -5,8 +5,11 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
 }
 
+val project_version: String by project
+
+
 group = "me.andrewreed"
-version = "1.0-SNAPSHOT"
+version = project_version
 
 repositories {
     google()
