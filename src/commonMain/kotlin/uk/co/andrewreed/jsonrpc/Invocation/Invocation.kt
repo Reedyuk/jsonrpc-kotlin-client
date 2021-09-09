@@ -1,8 +1,9 @@
 package uk.co.andrewreed.jsonrpc.Invocation
 
+import kotlinx.serialization.json.JsonArray
 import uk.co.andrewreed.jsonrpc.ResultParsers.AnyResultParser
 
-typealias Params = Array<String>
+typealias Params = JsonArray
 
 data class Invocation<Result>(
     val method: String,

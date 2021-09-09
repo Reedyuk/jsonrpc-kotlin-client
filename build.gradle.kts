@@ -45,6 +45,8 @@ kotlin {
                 implementation("io.ktor:ktor-client-core:$ktor_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version")
                 implementation("io.ktor:ktor-client-serialization:$ktor_version")
+                implementation("io.ktor:ktor-client-logging:$ktor_version")
+                implementation("ch.qos.logback:logback-classic:1.2.5")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
                 implementation("co.touchlab:kermit:$kermit_version")
             }
