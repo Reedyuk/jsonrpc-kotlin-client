@@ -1,6 +1,7 @@
 package uk.co.andrewreed.jsonrpc
 
 import co.touchlab.kermit.Kermit
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
 import uk.co.andrewreed.jsonrpc.Client.ExecuteException
 import uk.co.andrewreed.jsonrpc.Client.RPCClient
@@ -88,11 +89,12 @@ class ClientTests {
     fun testPostSerializableParams() = runTest {
         val client = RPCClient(clientUrl)
         val data = CallObject("0xF7e4B57862EC47A9B059b8D2D051bBd3A8A64A14", "0xfe50cc72")
+        val jsonElement = Json.encodeToJsonElement(CallObject.serializer(), data)
         val service = object : RPCService(client) {
             suspend fun call(): String {
                 val resp = invoke(
                     "eth_call",
-                    JsonArray(listOf(data.toJsonObject()))
+                    JsonArray(listOf(jsonElement))
                 )
                 kermit.v("$resp")
                 return resp.content
@@ -102,18 +104,11 @@ class ClientTests {
         assertEquals("0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b48656c6c6f20576f726c64000000000000000000000000000000000000000000", result)
     }
 
+    @Serializable
     data class CallObject(
         val to: String,
         val data: String
-    ) {
-        fun toJsonObject(): JsonObject =
-            JsonObject(
-                mapOf(
-                    "to" to JsonPrimitive(to),
-                    "data" to JsonPrimitive(data)
-                )
-            )
-    }
+    )
 
     @Test
     fun testPostInvalid() = runTest {
