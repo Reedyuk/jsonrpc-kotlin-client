@@ -1,9 +1,7 @@
 package uk.co.andrewreed.jsonrpc
 
 import co.touchlab.kermit.Kermit
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.*
 import uk.co.andrewreed.jsonrpc.Client.ExecuteException
 import uk.co.andrewreed.jsonrpc.Client.RPCClient
 import uk.co.andrewreed.jsonrpc.Service.RPCService
@@ -84,6 +82,37 @@ class ClientTests {
         }
         val result = service.call()
         assertEquals("0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b48656c6c6f20576f726c64000000000000000000000000000000000000000000", result)
+    }
+
+    @Test
+    fun testPostSerializableParams() = runTest {
+        val client = RPCClient(clientUrl)
+        val data = CallObject("0xF7e4B57862EC47A9B059b8D2D051bBd3A8A64A14", "0xfe50cc72")
+        val service = object : RPCService(client) {
+            suspend fun call(): String {
+                val resp = invoke(
+                    "eth_call",
+                    JsonArray(listOf(data.toJsonObject()))
+                )
+                kermit.v("$resp")
+                return resp.content
+            }
+        }
+        val result = service.call()
+        assertEquals("0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b48656c6c6f20576f726c64000000000000000000000000000000000000000000", result)
+    }
+
+    data class CallObject(
+        val to: String,
+        val data: String
+    ) {
+        fun toJsonObject(): JsonObject =
+            JsonObject(
+                mapOf(
+                    "to" to JsonPrimitive(to),
+                    "data" to JsonPrimitive(data)
+                )
+            )
     }
 
     @Test
