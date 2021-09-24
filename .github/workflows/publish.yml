@@ -17,3 +17,5 @@ jobs:
 
       - name: Run Tests
         run: ./gradlew testDebugUnitTest
+
+# need to apply for sonartype.

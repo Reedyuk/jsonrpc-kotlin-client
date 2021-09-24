@@ -43,14 +43,14 @@ class RPCClient(private val url: String) {
     }
 }
 
-typealias RequestId = String
+typealias RequestId = Int
 
 var lastIdx = 0
 
 class RequestIdGenerator {
     fun next(): RequestId {
         lastIdx += 1
-        return lastIdx.toString()
+        return lastIdx
     }
 }
 

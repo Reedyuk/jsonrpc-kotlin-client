@@ -6,7 +6,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import uk.co.andrewreed.jsonrpc.Invocation.Invocation
 import uk.co.andrewreed.jsonrpc.RequestExecutor.HTTP.HTTPRequestExecutorConfig
 
-class Request<R>(private val id: String? = null, invocation: Invocation<R>) {
+class Request<R>(private val id: Int? = null, invocation: Invocation<R>) {
 
     private val method = invocation.method
     private val params = invocation.params
