@@ -11,6 +11,15 @@ val project_version: String by project
 group = "uk.co.andrewreed"
 version = project_version
 
+val projectGithubUrl: String by project
+val projectGithubSCM: String by project
+val projectGithubSCMSSL: String by project
+val projectDescription: String by project
+
+val developerId: String by project
+val developerName: String by project
+val developerEmail: String by project
+
 repositories {
     google()
     jcenter()
@@ -91,6 +100,50 @@ android {
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/gitliveapp/packages")
+            credentials {
+                username = System.getenv("USERNAME")
+                password = System.getenv("TOKEN")
+            }
+        }
+    }
+
+    publications.all {
+        this as MavenPublication
+
+        pom {
+            name.set(group as String)
+            description.set(projectDescription)
+            url.set(projectGithubUrl)
+
+            licenses {
+                license {
+                    name.set("MIT License")
+                    url.set("http://opensource.org/licenses/MIT")
+                }
+            }
+
+            developers {
+                developer {
+                    id.set(developerId)
+                    name.set(developerName)
+                    email.set(developerEmail)
+                }
+            }
+
+            scm {
+                url.set(projectGithubUrl)
+                connection.set(projectGithubSCM)
+                developerConnection.set(projectGithubSCMSSL)
+            }
+        }
     }
 }
 

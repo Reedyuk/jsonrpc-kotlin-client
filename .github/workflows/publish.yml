@@ -18,4 +18,7 @@ jobs:
       - name: Run Tests
         run: ./gradlew testDebugUnitTest
 
-# need to apply for sonartype.
+      - name: Run Tests
+        run: ./gradlew publishAllPublicationsToGitHubPackagesRepository
+
+# need to apply for sonartype?
