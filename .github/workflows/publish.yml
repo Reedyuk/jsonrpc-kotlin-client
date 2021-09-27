@@ -20,5 +20,7 @@ jobs:
 
       - name: Publish
         run: ./gradlew publishAllPublicationsToGitHubPackagesRepository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 # need to apply for sonartype?
