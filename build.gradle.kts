@@ -107,7 +107,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/gitliveapp/packages")
+            url = uri("https://maven.pkg.github.com/reedyuk/jsonrpc-kotlin-client")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
