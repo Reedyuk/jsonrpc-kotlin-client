@@ -109,8 +109,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/gitliveapp/packages")
             credentials {
-                username = System.getenv("USERNAME")
-                password = System.getenv("TOKEN")
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
             }
         }
     }
