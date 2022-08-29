@@ -69,7 +69,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                //implementation("io.ktor:ktor-client-android:$ktor_version")
+                implementation("io.ktor:ktor-client-android:$ktor_version")
                 //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinx_coroutines_version")
             }
         }
@@ -80,7 +80,7 @@ kotlin {
         }
         val iosMain by getting {
             dependencies {
-                //implementation("io.ktor:ktor-client-ios:$ktor_version")
+                implementation("io.ktor:ktor-client-ios:$ktor_version")
             }
         }
         val iosTest by getting
@@ -92,7 +92,7 @@ kotlin {
 
         val jsMain by getting {
             dependencies {
-                //implementation("io.ktor:ktor-client-js:$ktor_version")
+                implementation("io.ktor:ktor-client-js:$ktor_version")
             }
         }
         val jsTest by getting

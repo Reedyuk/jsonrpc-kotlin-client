@@ -11,7 +11,6 @@ import io.ktor.serialization.kotlinx.json.*
 import uk.co.andrewreed.jsonrpc.Invocation.Invocation
 import uk.co.andrewreed.jsonrpc.RequestExecutor.Error
 import uk.co.andrewreed.jsonrpc.RequestExecutor.Request
-import uk.co.andrewreed.jsonrpc.RequestExecutor.Response
 import uk.co.andrewreed.jsonrpc.kermit
 
 class RPCClient(private val url: String) {

@@ -17,7 +17,7 @@ private val local = "http://127.0.0.1:7545"
 class ClientTests {
     private val kermit = Kermit()
 
-    private val clientUrl = local
+    private val clientUrl = ropsten
 
     @Test
     fun testPost() = runTest {
