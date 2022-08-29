@@ -1,6 +1,6 @@
 plugins {
-    kotlin("multiplatform") version "1.5.30-M1"
-    kotlin("plugin.serialization") version "1.5.30"
+    kotlin("multiplatform") version "1.7.10"
+    kotlin("plugin.serialization") version "1.7.10"
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
     `maven-publish`
@@ -22,7 +22,6 @@ val developerEmail: String by project
 
 repositories {
     google()
-    jcenter()
     mavenCentral()
 }
 
@@ -35,10 +34,13 @@ kotlin {
         publishLibraryVariants("release", "debug")
     }
     ios("ios") {
-        binaries {
-            framework {
-                baseName = "jsonrpc"
-            }
+        binaries.framework {
+            baseName = "jsonrpc"
+        }
+    }
+    iosSimulatorArm64 {
+        binaries.framework {
+            baseName = "jsonrpc"
         }
     }
     js(IR) {
@@ -52,11 +54,11 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-core:$ktor_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version")
-                implementation("io.ktor:ktor-client-serialization:$ktor_version")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
                 implementation("io.ktor:ktor-client-logging:$ktor_version")
-                implementation("ch.qos.logback:logback-classic:1.2.5")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+                implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version")
+//                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.10")
                 implementation("co.touchlab:kermit:$kermit_version")
             }
         }
@@ -67,8 +69,8 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-android:$ktor_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinx_coroutines_version")
+                //implementation("io.ktor:ktor-client-android:$ktor_version")
+                //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinx_coroutines_version")
             }
         }
         val androidTest by getting {
@@ -78,13 +80,19 @@ kotlin {
         }
         val iosMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-ios:$ktor_version")
+                //implementation("io.ktor:ktor-client-ios:$ktor_version")
             }
         }
         val iosTest by getting
+        val iosSimulatorArm64Main by getting
+        iosSimulatorArm64Main.dependsOn(iosMain)
+
+        val iosSimulatorArm64Test by getting
+        iosSimulatorArm64Test.dependsOn(iosTest)
+
         val jsMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-js:$ktor_version")
+                //implementation("io.ktor:ktor-client-js:$ktor_version")
             }
         }
         val jsTest by getting

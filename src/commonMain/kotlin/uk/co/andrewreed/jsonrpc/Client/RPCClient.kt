@@ -1,10 +1,13 @@
 package uk.co.andrewreed.jsonrpc.Client
 
 import io.ktor.client.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.logging.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.cache.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import uk.co.andrewreed.jsonrpc.Invocation.Invocation
 import uk.co.andrewreed.jsonrpc.RequestExecutor.Error
 import uk.co.andrewreed.jsonrpc.RequestExecutor.Request
@@ -16,7 +19,9 @@ class RPCClient(private val url: String) {
     private val requestIdGenerator = RequestIdGenerator()
 
     private val ktorClient: HttpClient = HttpClient {
-        install(JsonFeature)
+        install(ContentNegotiation) { json() }
+        install(HttpCache)
+        expectSuccess = true
         install(Logging) {
             logger = Logger.DEFAULT
             level = LogLevel.ALL
@@ -31,15 +36,14 @@ class RPCClient(private val url: String) {
         kermit.i("Request -> $request")
 
         //  convert to response object
-        val response = ktorClient.post<Response>(url) {
+        val response = ktorClient.post {
             contentType(ContentType.Application.Json)
-            body = request.buildBody()
+            setBody(request.buildBody())
         }
-
         kermit.i("Response -> $response")
         ktorClient.close()
-        response.error?.let { throw ExecuteException(it) }
-        return response.result!!
+        //response.error?.let { throw ExecuteException(it) }
+        return response.body()
     }
 }
 
