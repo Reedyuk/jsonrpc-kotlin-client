@@ -59,7 +59,7 @@ class ClientTests {
             }
         }
         val shaResult = service.sha()
-        assertEquals("0x59ec0bfb9d986ae04ea83e7cb8204c22a2ae445ac86a9cbfd793c9d5ae0e6299", shaResult)
+        assertEquals("0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad", shaResult)
     }
 
     @Test

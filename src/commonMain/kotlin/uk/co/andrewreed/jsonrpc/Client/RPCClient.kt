@@ -12,6 +12,7 @@ import io.ktor.serialization.kotlinx.json.*
 import uk.co.andrewreed.jsonrpc.Invocation.Invocation
 import uk.co.andrewreed.jsonrpc.RequestExecutor.Error
 import uk.co.andrewreed.jsonrpc.RequestExecutor.Request
+import uk.co.andrewreed.jsonrpc.RequestExecutor.Response
 import uk.co.andrewreed.jsonrpc.kermit
 
 class RPCClient(private val url: String) {
@@ -28,11 +29,11 @@ class RPCClient(private val url: String) {
         }
     }
 
-    suspend fun <R> invoke(invocation: Invocation<R>) = invocation.parser.parse(execute(makeRequest(invocation)))
+    suspend fun <R> invoke(invocation: Invocation<R>) = execute(makeRequest(invocation))
 
     private fun <R> makeRequest(invocation: Invocation<R>) = Request(requestIdGenerator.next(), invocation)
 
-    private suspend fun <R> execute(request: Request<R>): String {
+    private suspend fun <R> execute(request: Request<R>): Response {
         kermit.i("Request -> $request")
 
         //  convert to response object
@@ -43,7 +44,7 @@ class RPCClient(private val url: String) {
         kermit.i("Response -> ${response.bodyAsText()}")
         ktorClient.close()
         //response.error?.let { throw ExecuteException(it) }
-        return response.bodyAsText()
+        return response.body()
     }
 }
 
