@@ -6,6 +6,7 @@ import io.ktor.client.plugins.cache.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import uk.co.andrewreed.jsonrpc.Invocation.Invocation
@@ -19,8 +20,8 @@ class RPCClient(private val url: String) {
 
     private val ktorClient: HttpClient = HttpClient {
         install(ContentNegotiation) { json() }
-        install(HttpCache)
         expectSuccess = true
+        developmentMode = true
         install(Logging) {
             logger = Logger.DEFAULT
             level = LogLevel.ALL
@@ -31,18 +32,18 @@ class RPCClient(private val url: String) {
 
     private fun <R> makeRequest(invocation: Invocation<R>) = Request(requestIdGenerator.next(), invocation)
 
-    private suspend fun <R> execute(request: Request<R>): Any {
+    private suspend fun <R> execute(request: Request<R>): String {
         kermit.i("Request -> $request")
 
         //  convert to response object
-        val response = ktorClient.post {
+        val response = ktorClient.post(url) {
             contentType(ContentType.Application.Json)
             setBody(request.buildBody())
         }
-        kermit.i("Response -> $response")
+        kermit.i("Response -> ${response.bodyAsText()}")
         ktorClient.close()
         //response.error?.let { throw ExecuteException(it) }
-        return response.body()
+        return response.bodyAsText()
     }
 }
 

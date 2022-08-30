@@ -1,5 +1,6 @@
 package uk.co.andrewreed.jsonrpc.RequestExecutor
 
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -17,7 +18,7 @@ class Request<R>(private val id: Int? = null, invocation: Invocation<R>) {
             JsonKeys.jsonrpc.name to JsonPrimitive(HTTPRequestExecutorConfig.version),
             JsonKeys.method.name to JsonPrimitive(method)
         )
-        params?.let { params -> body[JsonKeys.params.name] = params }
+        body[JsonKeys.params.name] = params ?: JsonArray(emptyList())
         id?.let { body[JsonKeys.id.name] = JsonPrimitive(it) }
         return JsonObject(body)
     }
