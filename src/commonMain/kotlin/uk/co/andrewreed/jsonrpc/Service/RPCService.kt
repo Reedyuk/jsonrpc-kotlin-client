@@ -11,7 +11,7 @@ abstract class RPCService(private val client: RPCClient) {
 
     suspend fun <Result> invoke(method: String, params: Params? = null, parser: AnyResultParser<Result>): Result {
         val invocation = makeInvocation(method, params, parser)
-        return client.invoke(invocation)
+        return client.invoke(invocation).result as Result
     }
 
     suspend fun invoke(method: String, params: Params? = null): JsonPrimitive {

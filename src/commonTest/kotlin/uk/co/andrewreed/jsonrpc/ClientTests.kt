@@ -11,13 +11,13 @@ import kotlin.test.*
 expect fun runTest(test: suspend () -> Unit)
 
 private val ropsten = "https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
-private val local = "http://127.0.0.1:7545"
+private val local = "http://127.0.0.1:8545"
 
 // Tests are using Ganache
 class ClientTests {
     private val kermit = Kermit()
 
-    private val clientUrl = local
+    private val clientUrl = ropsten
 
     @Test
     fun testPost() = runTest {
@@ -39,13 +39,13 @@ class ClientTests {
         val client = RPCClient(clientUrl)
         val service = object : RPCService(client) {
             suspend fun balance(address: String): String {
-                val bal = invoke("eth_getBalance", JsonArray(listOf(JsonPrimitive(address))))
+                val bal = invoke("eth_getBalance", JsonArray(listOf(JsonPrimitive(address), JsonPrimitive("latest"))))
                 kermit.v("$bal")
                 return bal.content
             }
         }
-        val balance = service.balance("0xFa5fDa418364C2CA452EBD467644d23EE0d8bd80")
-        assertEquals("0x56ba9300511b21000", balance)
+        val balance = service.balance("0xF0C66B225FDA2fe9e0C54ce9B345F8A103c1Dca0")
+        assertEquals("0x8ac7230489e80000", balance)
     }
 
     @Test
@@ -59,23 +59,21 @@ class ClientTests {
             }
         }
         val shaResult = service.sha()
-        assertEquals("0x59ec0bfb9d986ae04ea83e7cb8204c22a2ae445ac86a9cbfd793c9d5ae0e6299", shaResult)
+        assertEquals("0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad", shaResult)
     }
 
     @Test
     fun testPostCallWithParams() = runTest {
         val client = RPCClient(clientUrl)
         val map = mapOf(
-            "to" to JsonPrimitive("0xF7e4B57862EC47A9B059b8D2D051bBd3A8A64A14"),
+            "to" to JsonPrimitive("0x6cd7d44516a20882cEa2DE9f205bF401c0d23570"),
             "data" to JsonPrimitive("0xfe50cc72")
         )
         val service = object : RPCService(client) {
             suspend fun call(): String {
                 val resp = invoke(
                     "eth_call",
-                    JsonArray(
-                        listOf(JsonObject(map))
-                    )
+                    JsonArray(listOf(JsonObject(map)))
                 )
                 kermit.v("$resp")
                 return resp.content

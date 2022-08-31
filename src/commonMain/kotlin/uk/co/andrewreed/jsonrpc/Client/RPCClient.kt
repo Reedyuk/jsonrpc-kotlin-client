@@ -1,10 +1,16 @@
 package uk.co.andrewreed.jsonrpc.Client
 
 import io.ktor.client.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.logging.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
 import uk.co.andrewreed.jsonrpc.Invocation.Invocation
 import uk.co.andrewreed.jsonrpc.RequestExecutor.Error
 import uk.co.andrewreed.jsonrpc.RequestExecutor.Request
@@ -16,30 +22,33 @@ class RPCClient(private val url: String) {
     private val requestIdGenerator = RequestIdGenerator()
 
     private val ktorClient: HttpClient = HttpClient {
-        install(JsonFeature)
+        install(ContentNegotiation) { json() }
+        expectSuccess = true
+        developmentMode = true
         install(Logging) {
             logger = Logger.DEFAULT
             level = LogLevel.ALL
         }
     }
 
-    suspend fun <R> invoke(invocation: Invocation<R>) = invocation.parser.parse(execute(makeRequest(invocation)))
+    suspend fun <R> invoke(invocation: Invocation<R>) = execute(makeRequest(invocation))
 
     private fun <R> makeRequest(invocation: Invocation<R>) = Request(requestIdGenerator.next(), invocation)
 
-    private suspend fun <R> execute(request: Request<R>): Any {
+    private suspend fun <R> execute(request: Request<R>): Response {
         kermit.i("Request -> $request")
 
         //  convert to response object
-        val response = ktorClient.post<Response>(url) {
+        val response = ktorClient.post(url) {
             contentType(ContentType.Application.Json)
-            body = request.buildBody()
+            setBody(request.buildBody())
         }
-
-        kermit.i("Response -> $response")
+        kermit.i("Response -> ${response.bodyAsText()}")
         ktorClient.close()
-        response.error?.let { throw ExecuteException(it) }
-        return response.result!!
+        response.body<JsonObject>()["error"]?.let {
+            throw ExecuteException(Json.decodeFromJsonElement<Error>(it))
+        }
+        return response.body()
     }
 }
 
