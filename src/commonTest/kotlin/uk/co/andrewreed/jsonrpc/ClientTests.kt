@@ -39,13 +39,13 @@ class ClientTests {
         val client = RPCClient(clientUrl)
         val service = object : RPCService(client) {
             suspend fun balance(address: String): String {
-                val bal = invoke("eth_getBalance", JsonArray(listOf(JsonPrimitive(address))))
+                val bal = invoke("eth_getBalance", JsonArray(listOf(JsonPrimitive(address), JsonPrimitive("latest"))))
                 kermit.v("$bal")
                 return bal.content
             }
         }
-        val balance = service.balance("0xFa5fDa418364C2CA452EBD467644d23EE0d8bd80")
-        assertEquals("0x56ba9300511b21000", balance)
+        val balance = service.balance("0xF0C66B225FDA2fe9e0C54ce9B345F8A103c1Dca0")
+        assertEquals("0x8ac7230489e80000", balance)
     }
 
     @Test
@@ -66,16 +66,14 @@ class ClientTests {
     fun testPostCallWithParams() = runTest {
         val client = RPCClient(clientUrl)
         val map = mapOf(
-            "to" to JsonPrimitive("0xF7e4B57862EC47A9B059b8D2D051bBd3A8A64A14"),
+            "to" to JsonPrimitive("0x6cd7d44516a20882cEa2DE9f205bF401c0d23570"),
             "data" to JsonPrimitive("0xfe50cc72")
         )
         val service = object : RPCService(client) {
             suspend fun call(): String {
                 val resp = invoke(
                     "eth_call",
-                    JsonArray(
-                        listOf(JsonObject(map))
-                    )
+                    JsonArray(listOf(JsonObject(map)))
                 )
                 kermit.v("$resp")
                 return resp.content

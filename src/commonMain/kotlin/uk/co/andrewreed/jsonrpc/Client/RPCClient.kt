@@ -2,13 +2,15 @@ package uk.co.andrewreed.jsonrpc.Client
 
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.plugins.cache.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
 import uk.co.andrewreed.jsonrpc.Invocation.Invocation
 import uk.co.andrewreed.jsonrpc.RequestExecutor.Error
 import uk.co.andrewreed.jsonrpc.RequestExecutor.Request
@@ -43,7 +45,9 @@ class RPCClient(private val url: String) {
         }
         kermit.i("Response -> ${response.bodyAsText()}")
         ktorClient.close()
-        //response.error?.let { throw ExecuteException(it) }
+        response.body<JsonObject>()["error"]?.let {
+            throw ExecuteException(Json.decodeFromJsonElement<Error>(it))
+        }
         return response.body()
     }
 }
