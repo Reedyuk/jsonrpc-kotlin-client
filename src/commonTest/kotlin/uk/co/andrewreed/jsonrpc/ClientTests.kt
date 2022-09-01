@@ -10,6 +10,7 @@ import kotlin.test.*
 
 expect fun runTest(test: suspend () -> Unit)
 
+private val goerli = "https://eth-goerli.g.alchemy.com/v2/ri0TxzkaKF-VwB95D1Np8EmmQ1qcG8tH"
 private val ropsten = "https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"
 private val local = "http://127.0.0.1:8545"
 
@@ -17,7 +18,7 @@ private val local = "http://127.0.0.1:8545"
 class ClientTests {
     private val kermit = Kermit()
 
-    private val clientUrl = ropsten
+    private val clientUrl = goerli
 
     @Test
     fun testPost() = runTest {
@@ -45,7 +46,7 @@ class ClientTests {
             }
         }
         val balance = service.balance("0xF0C66B225FDA2fe9e0C54ce9B345F8A103c1Dca0")
-        assertEquals("0x8ac7230489e80000", balance)
+        assertEquals("0x3782dace9d90000", balance)
     }
 
     @Test
