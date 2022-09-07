@@ -44,7 +44,6 @@ class RPCClient(private val url: String) {
             setBody(request.buildBody())
         }
         kermit.i("Response -> ${response.bodyAsText()}")
-        ktorClient.close()
         response.body<JsonObject>()["error"]?.let {
             throw ExecuteException(Json.decodeFromJsonElement<Error>(it))
         }
