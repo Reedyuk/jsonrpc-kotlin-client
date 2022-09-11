@@ -1,6 +1,6 @@
 # JSON-RPC Kotlin Client 
 
-[![Kotlin](https://img.shields.io/badge/kotlin-1.6.10-blue.svg)](http://kotlinlang.org) 
+[![Kotlin](https://img.shields.io/badge/kotlin-1.6.21-blue.svg)](http://kotlinlang.org) 
 ![badge][badge-android] 
 ![badge][badge-native] 
 ![badge][badge-js]

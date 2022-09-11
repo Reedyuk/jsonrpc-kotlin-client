@@ -1,6 +1,6 @@
 plugins {
-    kotlin("multiplatform") version "1.6.10"
-    kotlin("plugin.serialization") version "1.6.10"
+    kotlin("multiplatform") version "1.6.21"
+    kotlin("plugin.serialization") version "1.6.21"
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
     `maven-publish`
@@ -63,7 +63,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-logging:$ktor_version")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version")
-//                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.10")
+//                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.21")
                 implementation("co.touchlab:kermit:$kermit_version")
             }
         }
