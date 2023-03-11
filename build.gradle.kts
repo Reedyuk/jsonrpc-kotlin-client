@@ -1,15 +1,26 @@
+import java.util.*
+
 plugins {
     kotlin("multiplatform") version "1.6.21"
     kotlin("plugin.serialization") version "1.6.21"
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
     `maven-publish`
+    id("signing")
 }
 
-val project_version: String by project
+//expose properties
+val sonatypeStaging = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+val sonatypeSnapshots = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
 
-group = "uk.co.andrewreed"
-version = project_version
+val local = Properties()
+val localProperties: File = rootProject.file("local.properties")
+if (localProperties.exists()) {
+    localProperties.inputStream().use { local.load(it) }
+}
+
+val sonatypePasswordEnv = System.getenv("sonatypePasswordEnv")
+val sonatypeUsernameEnv = System.getenv("sonatypeUsernameEnv")
 
 val projectGithubUrl: String by project
 val projectGithubSCM: String by project
@@ -19,6 +30,10 @@ val projectDescription: String by project
 val developerId: String by project
 val developerName: String by project
 val developerEmail: String by project
+val group: String by project
+
+val project_version: String by project
+version = project_version
 
 repositories {
     google()
@@ -126,14 +141,22 @@ android {
     }
 }
 
+fun SigningExtension.whenRequired(block: () -> Boolean) {
+    setRequired(block)
+}
+
+val javadocJar by tasks.creating(Jar::class) {
+    archiveClassifier.value("javadoc")
+}
+
 publishing {
     repositories {
         maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/reedyuk/jsonrpc-kotlin-client")
+            url = uri(sonatypeStaging)
+
             credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
+                username = sonatypeUsernameEnv
+                password = sonatypePasswordEnv
             }
         }
     }
@@ -141,8 +164,11 @@ publishing {
     publications.all {
         this as MavenPublication
 
+        println(name)
+        artifact(javadocJar)
+
         pom {
-            name.set(group as String)
+            name.set(group)
             description.set(projectDescription)
             url.set(projectGithubUrl)
 
@@ -166,8 +192,17 @@ publishing {
                 connection.set(projectGithubSCM)
                 developerConnection.set(projectGithubSCMSSL)
             }
+
         }
     }
+}
+
+signing {
+    whenRequired { gradle.taskGraph.hasTask("publish") }
+    val signingKey: String? by project
+    val signingPassword: String? by project
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign(publishing.publications)
 }
 
 ktlint {

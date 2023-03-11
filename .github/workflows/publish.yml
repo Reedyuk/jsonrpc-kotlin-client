@@ -18,9 +18,12 @@ jobs:
 #      - name: Run Tests
 #        run: ./gradlew testDebugUnitTest
 
-      - name: Publish
-        run: ./gradlew publishAllPublicationsToGitHubPackagesRepository
+      - name: Run publish
+        run: ./gradlew publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          sonatypeUsernameEnv: ${{ secrets.SONATYPEUSERNAME }}
+          sonatypePasswordEnv: ${{ secrets.SONATYPEPASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_KEY_PASS }}
 
 # need to apply for sonartype?
