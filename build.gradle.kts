@@ -1,15 +1,15 @@
 import java.util.*
 
 plugins {
-    kotlin("multiplatform") version "1.6.21"
-    kotlin("plugin.serialization") version "1.6.21"
+    kotlin("multiplatform") version "1.8.10"
+    kotlin("plugin.serialization") version "1.8.10"
     id("com.android.library")
-    id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
+    id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
     `maven-publish`
     id("signing")
 }
 
-//expose properties
+// expose properties
 val sonatypeStaging = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
 val sonatypeSnapshots = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
 
@@ -64,11 +64,7 @@ kotlin {
         }
     }
     js(IR) {
-        browser {
-            commonWebpackConfig {
-                cssSupport.enabled = true
-            }
-        }
+        browser()
     }
     sourceSets {
         val commonMain by getting {
@@ -78,7 +74,6 @@ kotlin {
                 implementation("io.ktor:ktor-client-logging:$ktor_version")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version")
-//                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.21")
                 implementation("co.touchlab:kermit:$kermit_version")
             }
         }
@@ -90,12 +85,11 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-android:$ktor_version")
-                //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinx_coroutines_version")
             }
         }
         val androidTest by getting {
             dependencies {
-                implementation("junit:junit:4.13")
+                implementation("junit:junit:4.13.2")
             }
         }
         val jvmMain by getting {
@@ -105,12 +99,12 @@ kotlin {
         }
         val jvmTest by getting {
             dependencies {
-                implementation("junit:junit:4.13")
+                implementation("junit:junit:4.13.2")
             }
         }
         val iosMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-ios:$ktor_version")
+                implementation("io.ktor:ktor-client-darwin:$ktor_version")
             }
         }
         val iosTest by getting
@@ -130,11 +124,11 @@ kotlin {
 }
 
 android {
-    compileSdkVersion(29)
+    compileSdk = 31
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdkVersion(24)
-        targetSdkVersion(29)
+        minSdk = 24
+        targetSdk = 31
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
@@ -192,7 +186,6 @@ publishing {
                 connection.set(projectGithubSCM)
                 developerConnection.set(projectGithubSCMSSL)
             }
-
         }
     }
 }

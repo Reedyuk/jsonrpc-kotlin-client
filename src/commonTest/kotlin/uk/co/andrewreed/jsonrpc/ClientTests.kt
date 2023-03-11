@@ -34,7 +34,7 @@ class ClientTests {
         // assertEquals("0x4a817c800", price)
     }
 
-    //invoke("eth_getBalance", arrayOf(address)).content
+    // invoke("eth_getBalance", arrayOf(address)).content
     @Test
     fun testBalance() = runTest {
         val client = RPCClient(clientUrl)
