@@ -1,8 +1,8 @@
 import java.util.*
 
 plugins {
-    kotlin("multiplatform") version "1.8.10"
-    kotlin("plugin.serialization") version "1.8.10"
+    kotlin("multiplatform") version "1.8.20"
+    kotlin("plugin.serialization") version "1.8.20"
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
     `maven-publish`
